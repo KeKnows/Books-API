@@ -32,52 +32,14 @@ app.get("/api/books", (req, res) => {
 });
 
 app.get("/api/books/:id", (req, res) => {
-    const book = books.find(b => b.id === parseInt(req.params.id));
+    const id = parseInt(req.params.id);
+    const book = books.find(b => b.id === id);
 
     if (!book) {
         return res.status(404).json({ message: "Book not found" });
     }
 
     res.json(book);
-});
-
-app.post("/api/books", (req, res) => {
-    const newBook = {
-        id: books.length + 1,
-        title: req.body.title,
-        author: req.body.author,
-        genre: req.body.genre,
-        copiesAvailable: req.body.copiesAvailable
-    };
-
-    books.push(newBook);
-    res.status(201).json(newBook);
-});
-
-app.put("/api/books/:id", (req, res) => {
-    const book = books.find(b => b.id === parseInt(req.params.id));
-
-    if (!book) {
-        return res.status(404).json({ message: "Book not found" });
-    }
-
-    book.title = req.body.title ?? book.title;
-    book.author = req.body.author ?? book.author;
-    book.genre = req.body.genre ?? book.genre;
-    book.copiesAvailable = req.body.copiesAvailable ?? book.copiesAvailable;
-
-    res.json(book);
-});
-
-app.delete("/api/books/:id", (req, res) => {
-    const index = books.findIndex(b => b.id === parseInt(req.params.id));
-
-    if (index === -1) {
-        return res.status(404).json({ message: "Book not found" });
-    }
-
-    const deletedBook = books.splice(index, 1);
-    res.json(deletedBook[0]);
 });
 
 const PORT = 3000;
