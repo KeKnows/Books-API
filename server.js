@@ -1,4 +1,8 @@
-// Books for bookstore API
+const express = require("express");
+
+const app = express();
+app.use(express.json());
+
 let books = [
     {
         id: 1,
@@ -21,24 +25,62 @@ let books = [
         genre: "Dystopian Fiction",
         copiesAvailable: 7
     }
-    // Add more books if you'd like!
 ];
 
-/* Create your REST API here with the following endpoints:
-    'GET /api/books': 'Get all books',
-    'GET /api/books/:id': 'Get a specific book',
-    'POST /api/books': 'Add a new book',
-    'PUT /api/books/:id': 'Update a book',
-    'DELETE /api/books/:id': 'Delete a book'
-*/
+app.get("/api/books", (req, res) => {
+    res.json(books);
+});
 
+app.get("/api/books/:id", (req, res) => {
+    const book = books.find(b => b.id === parseInt(req.params.id));
 
+    if (!book) {
+        return res.status(404).json({ message: "Book not found" });
+    }
 
+    res.json(book);
+});
 
+app.post("/api/books", (req, res) => {
+    const newBook = {
+        id: books.length + 1,
+        title: req.body.title,
+        author: req.body.author,
+        genre: req.body.genre,
+        copiesAvailable: req.body.copiesAvailable
+    };
 
+    books.push(newBook);
+    res.status(201).json(newBook);
+});
 
+app.put("/api/books/:id", (req, res) => {
+    const book = books.find(b => b.id === parseInt(req.params.id));
 
+    if (!book) {
+        return res.status(404).json({ message: "Book not found" });
+    }
 
+    book.title = req.body.title ?? book.title;
+    book.author = req.body.author ?? book.author;
+    book.genre = req.body.genre ?? book.genre;
+    book.copiesAvailable = req.body.copiesAvailable ?? book.copiesAvailable;
 
+    res.json(book);
+});
 
+app.delete("/api/books/:id", (req, res) => {
+    const index = books.findIndex(b => b.id === parseInt(req.params.id));
 
+    if (index === -1) {
+        return res.status(404).json({ message: "Book not found" });
+    }
+
+    const deletedBook = books.splice(index, 1);
+    res.json(deletedBook[0]);
+});
+
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
