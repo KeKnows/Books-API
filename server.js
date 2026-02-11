@@ -83,7 +83,10 @@ app.delete("/api/books/:id", (req, res) => {
     res.json(deletedBook[0]);
 });
 
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+if (require.main === module) {
+    app.listen(3000, () => {
+        console.log("Server running on http://localhost:3000");
+    });
+}
+
+module.exports = app;
